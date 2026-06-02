@@ -2,7 +2,7 @@ import { type CSSProperties, useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 type Card = {
-  label: string
+  label?: string
   title: string
   text: string
 }
@@ -17,9 +17,17 @@ type Slide = {
   eyebrow: string
   title: string
   subtitle?: string
+  visual?: {
+    src: string
+    alt: string
+    caption: string
+    size?: 'large'
+  }
   cards?: Card[]
   roadmap?: RoadmapItem[]
   accent: string
+  intro?: boolean
+  finale?: boolean
 }
 
 type AnimatedStyle = CSSProperties & {
@@ -28,11 +36,34 @@ type AnimatedStyle = CSSProperties & {
 
 const slides: Slide[] = [
   {
+    eyebrow: 'Candidate profile',
+    title: 'Привет, я Fullstack developer',
+    subtitle:
+      'Мне 26 лет, я middle fullstack разработчик в Fullstack-кластере SberAI RND. Хочу помогать кластеру быстрее договариваться, сильнее использовать AI и спокойнее доводить идеи до результата.',
+    accent: '01',
+    intro: true,
+    cards: [
+      {
+        label: 'role',
+        title: 'Middle Fullstack',
+        text: 'Пишу и понимаю обе стороны продукта: UI, backend, интеграции, качество и delivery.',
+      },
+      {
+        label: 'team',
+        title: 'SberAI RND',
+        text: 'Работаю внутри Fullstack-кластера и вижу, где нам уже хорошо, а где можно ускориться.',
+      },
+    ],
+  },
+  {
     eyebrow: 'Fullstack cluster leadership',
     title: 'Кластер, который ускоряет команды',
-    subtitle:
-      'Кандидат в лидеры Fullstack-кластера. SberAI RND, 26 лет, middle fullstack developer.',
-    accent: '01',
+    visual: {
+      src: '/programmer.png',
+      alt: 'Программист в ретрофутуристичном стиле',
+      caption: 'Фуллстек_разработчик.png',
+    },
+    accent: '02',
     cards: [
       {
         label: 'контекст',
@@ -54,7 +85,12 @@ const slides: Slide[] = [
   {
     eyebrow: 'Анализ текущей ситуации',
     title: 'Что работает, а что трёт по нервам',
-    accent: '02',
+    visual: {
+      src: '/pain.png',
+      alt: 'Иллюстрация болей и раздражителей в работе',
+      caption: 'pain_points.png',
+    },
+    accent: '03',
     cards: [
       {
         label: 'работает',
@@ -82,7 +118,13 @@ const slides: Slide[] = [
     eyebrow: 'Фокусы следующего года',
     title: 'Куда двигаться',
     subtitle: 'Меньше хаоса в процессах, больше скорости в поставке и качества в продуктовых интерфейсах.',
-    accent: '03',
+    visual: {
+      src: '/where.png',
+      alt: 'Иллюстрация направления развития Fullstack-кластера',
+      caption: 'where_next.png',
+      size: 'large',
+    },
+    accent: '04',
     cards: [
       {
         label: 'управление',
@@ -104,7 +146,7 @@ const slides: Slide[] = [
   {
     eyebrow: 'Предложения',
     title: 'Как превращать боли в систему',
-    accent: '04',
+    accent: '05',
     cards: [
       {
         label: '1',
@@ -131,7 +173,7 @@ const slides: Slide[] = [
   {
     eyebrow: 'Дорожная карта',
     title: 'Первые 12 месяцев',
-    accent: '05',
+    accent: '06',
     roadmap: [
       {
         quarter: 'Q1',
@@ -158,7 +200,7 @@ const slides: Slide[] = [
   {
     eyebrow: 'Риски',
     title: 'Что может пойти не так',
-    accent: '06',
+    accent: '07',
     cards: [
       {
         label: 'риск',
@@ -182,7 +224,7 @@ const slides: Slide[] = [
     title: 'Почему я хочу быть лидером',
     subtitle:
       'Мне интересно соединять инженерию, продуктовую ясность и спокойную командную скорость.',
-    accent: '07',
+    accent: '08',
     cards: [
       {
         label: 'опыт',
@@ -205,7 +247,7 @@ const slides: Slide[] = [
     eyebrow: 'Место для личных идей',
     title: 'Зона для смелых ставок',
     subtitle: 'Черновик специально оставлен гибким: сюда добавим твои сильные личные идеи после первой примерки.',
-    accent: '08',
+    accent: '09',
     cards: [
       {
         label: 'идея',
@@ -223,6 +265,13 @@ const slides: Slide[] = [
         text: 'Помогать джунам и новым участникам быстрее входить в код, процессы и культуру ревью.',
       },
     ],
+  },
+  {
+    eyebrow: 'End of transmission',
+    title: 'Спасибо за внимание',
+    subtitle: 'Готов обсудить идеи, боли и то, каким мы хотим видеть Fullstack-кластер дальше.',
+    accent: '10',
+    finale: true,
   },
 ]
 
@@ -266,23 +315,71 @@ function App() {
     <main className="deck">
       <div className="sun" aria-hidden="true"></div>
       <div className="grid-floor" aria-hidden="true"></div>
+      <div className="code-rain" aria-hidden="true">
+        <span>const leader = cluster.elect(candidate)</span>
+        <span>reviewEngine.scan(mr)</span>
+        <span>uiKit.render(pattern)</span>
+        <span>git push --force-with-lease</span>
+      </div>
       <div className="scanlines" aria-hidden="true"></div>
 
       <header className="topbar">
         <span>Fullstack leader election</span>
-        <span>
+        <span className="coin-counter" key={`counter-${activeSlide}`}>
+          <span className="coin-burst" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+          <span className="coin-icon" aria-hidden="true" />
           {String(activeSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
         </span>
       </header>
 
-      <section className={`slide slide-${direction}`} key={currentSlide.accent}>
+      <section
+        className={`slide slide-${direction}${currentSlide.intro ? ' intro-slide' : ''}${
+          currentSlide.finale ? ' finale-slide' : ''
+        }`}
+        key={currentSlide.accent}
+      >
+        {currentSlide.finale && (
+          <div className="finale-core" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+        )}
+
+        {currentSlide.intro && (
+          <figure className="portrait-frame">
+            <div className="portrait-burst" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <img src="/image.png" alt="Фото кандидата" />
+          </figure>
+        )}
+
         <div className="slide-copy">
           <p className="eyebrow">{currentSlide.eyebrow}</p>
           <h1>{currentSlide.title}</h1>
           {currentSlide.subtitle && <p className="subtitle">{currentSlide.subtitle}</p>}
+          {currentSlide.visual && (
+            <figure className={`slide-visual${currentSlide.visual.size === 'large' ? ' slide-visual-large' : ''}`}>
+              <div className="visual-burst" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </div>
+              <img src={currentSlide.visual.src} alt={currentSlide.visual.alt} />
+              <figcaption>{currentSlide.visual.caption}</figcaption>
+            </figure>
+          )}
         </div>
 
-        {currentSlide.cards && (
+          {currentSlide.cards && (
           <div className="card-grid">
             {currentSlide.cards.map((card, index) => (
               <article
@@ -290,7 +387,7 @@ function App() {
                 key={card.title}
                 style={{ '--delay': `${index * 70}ms` } as AnimatedStyle}
               >
-                <span>{card.label}</span>
+                <code className="card-prompt">~/fullstack/{card.label}</code>
                 <h2>{card.title}</h2>
                 <p>{card.text}</p>
               </article>
@@ -308,6 +405,7 @@ function App() {
               >
                 <strong>{item.quarter}</strong>
                 <div>
+                  <code className="card-prompt">roadmap.commit({item.quarter.toLowerCase()})</code>
                   <h2>{item.title}</h2>
                   <p>{item.result}</p>
                 </div>
@@ -317,6 +415,13 @@ function App() {
         )}
 
         <div className="orbital-number" aria-hidden="true">
+          <span className="score-burst">
+            <i />
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
           {currentSlide.accent}
         </div>
       </section>
