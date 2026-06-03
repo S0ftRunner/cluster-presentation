@@ -34,6 +34,9 @@ type AnimatedStyle = CSSProperties & {
   '--delay': string
 }
 
+const assetPath = (path: string) =>
+  path.startsWith('data:') ? path : `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+
 const slides: Slide[] = [
   {
     eyebrow: 'Candidate profile',
@@ -358,7 +361,7 @@ function App() {
               <span />
               <span />
             </div>
-            <img src="/image.png" alt="Фото кандидата" />
+            <img src={assetPath('/image.png')} alt="Фото кандидата" />
           </figure>
         )}
 
@@ -373,7 +376,7 @@ function App() {
                 <span />
                 <span />
               </div>
-              <img src={currentSlide.visual.src} alt={currentSlide.visual.alt} />
+              <img src={assetPath(currentSlide.visual.src)} alt={currentSlide.visual.alt} />
               <figcaption>{currentSlide.visual.caption}</figcaption>
             </figure>
           )}
